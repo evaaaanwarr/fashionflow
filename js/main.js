@@ -1,21 +1,45 @@
 (function ($) {
     "use strict";
+
+    // Spinner
+    var spinner = function () {
+        setTimeout(function () {
+            if ($('#spinner').length > 0) {
+                $('#spinner').removeClass('show');
+            }
+        }, 1);
+    };
+    spinner();
     
-    // Dropdown on mouse hover
-    $(document).ready(function () {
-        function toggleNavbarMethod() {
-            if ($(window).width() > 992) {
-                $('.navbar .dropdown').on('mouseover', function () {
-                    $('.dropdown-toggle', this).trigger('click');
-                }).on('mouseout', function () {
-                    $('.dropdown-toggle', this).trigger('click').blur();
-                });
-            } else {
-                $('.navbar .dropdown').off('mouseover').off('mouseout');
+    
+    // Initiate the wowjs
+    new WOW().init();
+
+
+    // Sticky Navbar
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 45) {
+            $('.navbar').addClass('sticky-top shadow-sm');
+        } else {
+            $('.navbar').removeClass('sticky-top shadow-sm');
+        }
+    });
+
+
+    // Smooth scrolling on the navbar links
+    $(".navbar-nav a").on('click', function (event) {
+        if (this.hash !== "") {
+            event.preventDefault();
+            
+            $('html, body').animate({
+                scrollTop: $(this.hash).offset().top - 45
+            }, 1500, 'easeInOutExpo');
+            
+            if ($(this).parents('.navbar-nav').length) {
+                $('.navbar-nav .active').removeClass('active');
+                $(this).closest('a').addClass('active');
             }
         }
-        toggleNavbarMethod();
-        $(window).resize(toggleNavbarMethod);
     });
     
     
@@ -33,71 +57,46 @@
     });
 
 
-    // Vendor carousel
-    $('.vendor-carousel').owlCarousel({
-        loop: true,
-        margin: 29,
-        nav: false,
-        autoplay: true,
-        smartSpeed: 1000,
-        responsive: {
-            0:{
-                items:2
-            },
-            576:{
-                items:3
-            },
-            768:{
-                items:4
-            },
-            992:{
-                items:5
-            },
-            1200:{
-                items:6
-            }
-        }
+    // Facts counter
+    $('[data-toggle="counter-up"]').counterUp({
+        delay: 10,
+        time: 2000
     });
 
 
-    // Related carousel
-    $('.related-carousel').owlCarousel({
-        loop: true,
-        margin: 29,
-        nav: false,
+    // Screenshot carousel
+    $(".screenshot-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1000,
+        loop: true,
+        dots: true,
+        items: 1
+    });
+
+
+    // Testimonials carousel
+    $(".testimonial-carousel").owlCarousel({
+        autoplay: true,
+        smartSpeed: 1000,
+        loop: true,
+        center: true,
+        dots: false,
+        nav: true,
+        navText : [
+            '<i class="bi bi-chevron-left"></i>',
+            '<i class="bi bi-chevron-right"></i>'
+        ],
         responsive: {
             0:{
                 items:1
             },
-            576:{
+            768:{
                 items:2
             },
-            768:{
-                items:3
-            },
             992:{
-                items:4
+                items:3
             }
         }
-    });
-
-
-    // Product Quantity
-    $('.quantity button').on('click', function () {
-        var button = $(this);
-        var oldValue = button.parent().parent().find('input').val();
-        if (button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
-        }
-        button.parent().parent().find('input').val(newVal);
     });
     
 })(jQuery);
